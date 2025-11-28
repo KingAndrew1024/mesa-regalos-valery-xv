@@ -108,7 +108,7 @@
                 <div class="text">{{ link.text }}</div>
                 <div class="link-actions">
                   <div class="icon delete"></div>
-                  <div  class="icon edit"></div>
+                  <div class="icon edit"></div>
                 </div>
               </div>
               <div class="link-url">{{ link.url }}</div>
@@ -608,10 +608,10 @@ function addLink() {
     height: 32px !important;
   }
   .gift-btn {
-    animation: beat-small 2s infinite !important;
+    animation: beat-small 2s infinite;
   }
   .gift-btn:hover {
-    animation: none !important;
+    animation: none;
     width: 40px;
     height: 40px;
   }
@@ -766,28 +766,35 @@ function addLink() {
   margin-top: 8px;
   font-size: 1.1em;
 }
-
-.gift-btn-wrapper {
+.empty-list .gift-btn-wrapper {
+  position: initial;
   height: 80px;
 }
+.empty-list .gift-btn {
+  animation: beat 2s infinite;
+}
+
 .gift-btn {
   background: url(../../assets/birthday-gift.png);
   background-size: cover;
-  filter: drop-shadow(5px 5px 10px #fff);
-  animation: beat 1s infinite;
-  width: 72px;
-  height: 72px;
   cursor: pointer;
 }
 
 @keyframes beat {
   0% {
+    filter: drop-shadow(5px 5px 10px blueviolet);
     width: 72px;
     height: 72px;
   }
-  100% {
+  50% {
+    filter: drop-shadow(5px 5px 10px #fff);
     width: 80px;
     height: 80px;
+  }
+  100% {
+    filter: drop-shadow(5px 5px 10px blueviolet);
+    width: 72px;
+    height: 72px;
   }
 }
 
