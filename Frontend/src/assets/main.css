@@ -24,18 +24,24 @@ main {
 }
 
 button {
-  background-color: rgb(172, 114, 226);
-  width: 80px;
-  height: 40px;
-  padding: 2px;
+  background-color: #00b84d;
+  border: 2px solid #008739;
   border-radius: 6px;
   color: white;
-  border: 2px solid blueviolet;
+  padding: 2px;
+  width: 80px;
+  height: 40px;
+  cursor: pointer;
 }
 button:disabled {
   background-color: lightgray;
   border-color: gray;
   color: gray;
+  cursor: initial;
+}
+button:not(:disabled):active {
+  transform: scale(.9);
+  filter: brightness(.9);
 }
 
 @media (min-width: 1024px) {
@@ -59,4 +65,70 @@ button:disabled {
   opacity: 0.85;
   width: 100%;
   height: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  box-shadow: 0 0 12px 6px #008739;
+  padding: 8px;
+  color: black;
+}
+.card .header,
+.card .main,
+.card .footer {
+  width: 100%;
+}
+.card .footer {
+  margin-top: 8px;
+}
+
+.card .header {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bolder;
+  color: rgb(0, 157, 8);
+  margin-bottom: 6px;
+}
+.card .main {
+  display: flex;
+  flex-flow: column;
+  flex: 1;
+  height: 100%;
+}
+.card label {
+  color: #000000;
+}
+.card .footer {
+  display: flex;
+  justify-content: space-between;
+}
+.card .footer button.cancel {
+  border-color: red;
+  background-color: orange;
+  color: black;
+}
+
+
+.icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.icon.open-link {
+  content: url(../assets/icons/open_link.svg);
+}
+.icon.delete {
+  content: url(../assets/icons/delete.svg);
+}
+.icon.edit {
+  content: url(../assets/icons/edit_square.svg);
+}
+.icon.add {
+  content: url(../assets/icons/add_circle.svg);
 }

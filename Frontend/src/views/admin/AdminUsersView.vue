@@ -33,18 +33,18 @@
   <div id="form" ref="formref">
     <div class="form-content">
       <div class="action-bar">
-        <div class="close" @click="hideForm">X</div>
+        <div class="cancel" @click="hideForm">X</div>
       </div>
       <div class="form-row">
-        <label for="name">Nombre</label>
+        <label for="name">Nombre:</label>
         <input type="text" name="name" id="name" v-model="name" />
       </div>
       <div class="form-row">
-        <label for="username">Usuario</label>
+        <label for="username">Usuario:</label>
         <input type="text" name="username" id="username" v-model="username" />
       </div>
       <div class="form-row">
-        <label for="password">Contraseña</label>
+        <label for="password">Contraseña:</label>
         <input type="password" name="password" id="password" v-model="password" />
       </div>
       <div class="footer actions">
@@ -317,7 +317,7 @@ function deleteUser(userId: number) {
   display: flex;
   justify-content: flex-end;
 }
-.form-content .action-bar .close {
+.form-content .action-bar .cancel {
   cursor: pointer;
 }
 .form-content .form-row {

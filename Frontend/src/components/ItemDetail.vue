@@ -1,30 +1,28 @@
 <template>
-  <div class="item-detail" v-if="item">
-    <div class="item-card">
-      <div class="head">
-        <div class="image" :style="'--bg:url(' + item.image + ')'"></div>
-        <img :src="item.image" alt="regalo" />
+  <div class="card" v-if="item">
+    <div class="header">
+      <div class="image" :style="'--bg:url(' + item.image + ')'"></div>
+      <img :src="item.image" alt="regalo" />
+    </div>
+    <div class="main">
+      <div class="title">{{ item.title }}</div>
+      <div class="description">{{ item.description }}</div>
+      <div class="link">
+        <div>Lo puedes encontrar en:</div>
+        <ul>
+          <li v-for="link in item.links">
+            <a :href="link.url" target="_blank"><span class="icon open-link"></span>{{ link.text }}</a>
+          </li>
+        </ul>
       </div>
-      <div class="body">
-        <div class="title">{{ item.title }}</div>
-        <div class="description">{{ item.description }}</div>
-        <div class="link">
-          <div>Lo puedes encontrar en:</div>
-          <ul>
-            <li v-for="link in item.links">
-              <a :href="link.url" target="_blank">{{ link.text }}</a>
-            </li>
-          </ul>
-        </div>
-        <div class="note" v-if="item.status === 1">
-          <strong>NOTA:</strong> Este artículo ya fue elegido por
-          <strong>{{ item.username }}</strong>
-        </div>
+      <div class="note" v-if="item.status === 1">
+        <strong>NOTA:</strong> Este artículo ya fue elegido por
+        <strong>{{ item.username }}</strong>
       </div>
-      <div class="tail">
-        <button @click="close" class="close">Cerrar</button>
-        <button @click="showUserForm" v-if="item.status === 0">Quiero regalarlo</button>
-      </div>
+    </div>
+    <div class="footer">
+      <button @click="close" class="cancel">Cerrar</button>
+      <button @click="showUserForm" v-if="item.status === 0">Quiero regalarlo</button>
     </div>
   </div>
   <div class="backdrop" @click="close"></div>
@@ -49,51 +47,29 @@ function showUserForm() {
 </script>
 
 <style scoped>
-.item-detail {
+.card {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
+
   margin: auto;
   max-width: 90%;
   width: 400px;
+  height: min-content;
   max-height: 80vh;
-}
-.item-detail {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 2;
 }
-.item-card {
-  display: flex;
-  flex-direction: column;
-  background-color: #eadafb;
-  margin: auto 8px;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 0 12px 6px rebeccapurple;
-  width: 100%;
-  z-index: 1;
-}
 
-.head {
+.card .header {
   position: relative;
   background-color: gray;
-  height: 200px;
   border-radius: 6px;
-}
-.body {
-  flex: 1;
-  padding: 6px;
-}
-.tail {
-  display: flex;
-  justify-content: space-between;
+  height: 200px;
 }
 
-.image {
+.card .header .image {
   background: var(--bg) no-repeat;
   background-size: cover;
   background-position: center;
@@ -101,37 +77,49 @@ function showUserForm() {
   filter: blur(4px) brightness(0.7);
   --webkit-filter: blur(4px) brightness(0.7);
 }
-img {
+.card .header img {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   margin: auto;
-  width: inherit;
-  height: inherit;
+  max-width: 90%;
+  max-height: 90%;
 }
 
-.body {
+.card .main {
+  flex: 1;
+  padding: 6px;
+}
+
+.main {
   display: flex;
   flex-direction: column;
 }
-.body .title {
-  color: rgb(172, 114, 226);
+.main .title {
+  text-align: center;
   text-transform: uppercase;
+  color: rgb(172, 114, 226);
   font-weight: bold;
+  margin-bottom: 4px;
 }
-.body .description {
+.main .description {
   color: black;
+  margin-bottom: 8px;
 }
-.body .link {
+.main .link {
   color: black;
   overflow: auto;
   word-break: break-word;
   white-space: break-spaces;
   max-height: 22vh;
 }
-.body .note {
+.main .link div {
+  font-weight: lighter;
+  padding-left: 8px;
+}
+.main .note {
   margin-top: auto;
   margin-bottom: 0;
   color: red;
@@ -141,22 +129,27 @@ strong {
   font-weight: bold;
 }
 
+ul {
+  padding-left: 8px;
+}
 ul li {
-  margin: 2px 0;
+  margin-top: 8px;
+  list-style-type: none;
+  display: flex;
+}
+ul li .icon {
+  margin-right: 4px;
+}
+ul li a {
+  display: flex;
 }
 
-.body a,
-.body a:visited {
+.main a,
+.main a:visited {
   /* display: block; */
   color: blue;
 }
-.body a:hover {
+.main a:hover {
   color: green;
-}
-
-.tail .close {
-  border-color: red;
-  background-color: orange;
-  color: black;
 }
 </style>

@@ -54,6 +54,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  font-family: inherit;
   margin: 0;
   font-weight: normal;
   user-select: none;

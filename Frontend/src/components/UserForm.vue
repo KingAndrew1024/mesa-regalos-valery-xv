@@ -1,7 +1,7 @@
 <template>
-  <div class="user-form">
+  <div class="card">
     <div class="header">IMPORTANTE</div>
-    <div class="body">
+    <div class="main">
       <div class="main-msg">
         Porfavor registra tu nombre para que otros sepan que este regalo ya fue seleccionado.
         <br />
@@ -30,9 +30,11 @@
         </div>
       </div>
     </div>
-    <div class="tail">
-      <button @click="onCancel">Cancelar</button>
-      <button @click="onConfirm" :disabled="!username || !email || !validEmail">Confirmar</button>
+    <div class="footer">
+      <button @click="onCancel" class="cancel">Cancelar</button>
+      <button @click="onConfirm" :disabled="!username || !email || !validEmail" class="confirm">
+        Confirmar
+      </button>
     </div>
   </div>
   <div class="backdrop" @click="onCancel"></div>
@@ -58,65 +60,36 @@ const validEmail = computed(() => {
 </script>
 
 <style scoped>
-.user-form {
+.card {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   margin: auto;
-  padding: 6px;
-  border-radius: 8px;
   max-width: 90%;
   width: 260px;
   max-height: 40vh;
-
-  display: flex;
-  flex-direction: column;
-  background-color: #eadafb;
-  box-shadow: 0 0 12px 6px rebeccapurple;
-
-  color: black;
-
   z-index: 2;
 }
 
-.header {
-  text-align: center;
-  font-weight: bolder;
-  color: green;
-  padding-bottom: 6px;
-}
-.body {
-  height: 100%;
-  display: flex;
-  flex-flow: column;
-  flex: 1;
-}
-.body .main-msg {
+.card .main .main-msg {
   margin-bottom: 6px;
 }
-.body .field {
+.card .main .field {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
 }
-.body .field:first-child {
+.card .main .field:first-child {
   margin-top: 4px;
   margin-bottom: 8px;
 }
-.body .field label {
+.card .main .field label {
   font-weight: bolder;
 }
-.body .field input {
+.card .main .field input {
   height: 32px;
   border-radius: 4px;
-}
-
-.tail {
-  display: flex;
-  justify-content: space-between;
-  margin-top: auto;
-  margin-bottom: 0;
 }
 </style>
