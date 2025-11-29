@@ -16,8 +16,8 @@
         </ul>
       </div>
       <div class="note" v-if="item.status === 1">
-        <strong>NOTA:</strong> Este artículo ya fue elegido por
-        <strong>{{ item.username }}</strong>
+        Este artículo ya fue elegido por:
+        <strong>{{ item.username || "tí"}}</strong>
       </div>
     </div>
     <div class="footer">
@@ -100,7 +100,7 @@ function showUserForm() {
 .main .title {
   text-align: center;
   text-transform: uppercase;
-  color: rgb(172, 114, 226);
+  color: black;
   font-weight: bold;
   margin-bottom: 4px;
 }
@@ -120,9 +120,10 @@ function showUserForm() {
   padding-left: 8px;
 }
 .main .note {
-  margin-top: auto;
-  margin-bottom: 0;
+  font-weight: bold;
   color: red;
+  margin-top: 8px;
+  margin-bottom: 0;
 }
 strong {
   color: black;
@@ -148,6 +149,7 @@ ul li a {
 .main a:visited {
   /* display: block; */
   color: blue;
+  font-weight: 500;
 }
 .main a:hover {
   color: green;

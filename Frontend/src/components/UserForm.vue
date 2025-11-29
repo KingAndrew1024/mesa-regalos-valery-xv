@@ -15,6 +15,7 @@
             name="name"
             maxlength="50"
             placeholder="Tu Nombre"
+            autofocus
             v-model="username"
           />
         </div>

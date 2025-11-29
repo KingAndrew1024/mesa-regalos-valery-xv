@@ -1,6 +1,7 @@
 <template>
   <main class="admin">
-    <div class="action-bar" v-if="isAuthenticated">
+    <div class="action-bar" v-if="!isAuthenticated">
+      <div class="screen-title">Administración de Regalos</div>
       <!-- <router-link to="/admin/users">USUARIOS</router-link> -->
       <!-- <router-link to="/admin/gifts">REGALOS</router-link> -->
       <a href="javascript:void()" @click="logout" id="logout">SALIR</a>
@@ -29,7 +30,7 @@ main {
   background: url(../../assets/bg2.jpg) no-repeat;
   background-size: cover;
   overflow: auto;
-  
+
   color: white;
   overflow: auto;
   padding-bottom: 12px;
@@ -61,5 +62,15 @@ main {
 a,
 a:visited {
   color: whitesmoke;
+}
+
+.screen-title {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  color: black;
+  font-weight: bold;
+  margin-left: 40px;
+  margin-right: 4px;
 }
 </style>

@@ -1,12 +1,8 @@
 <template>
   <div id="main-wrapper">
-    <div class="screen-title">Administración de Regalos</div>
     <div class="gift-btn-wrapper" v-if="gifts?.length! > 0">
       <div class="gift-btn" @click="showCreateForm"></div>
     </div>
-    <!-- <div>
-      <button id="new-btn" @click="showCreateForm" v-if="gifts?.length! > 0">+</button>
-    </div> -->
 
     <div class="backdrop" v-if="showBackdrop"></div>
     <div class="loading" v-if="loading">{{ processingMsg }}</div>
@@ -43,10 +39,11 @@
         <div>Links tiendas</div>
         <!-- <div>Acciones</div> -->
       </div>
-      <div class="row body" v-for="(gift, idx) in gifts">
+      <div class="row body" v-for="(gift, idx) in gifts" :class="{ odd: (idx + 1) % 2 != 0 }">
         <div>
           <!-- {{ idx + 1 }} -->
           <div class="gift-actions">
+            <div>({{ idx + 1 }})</div>
             <div @click="showConfirmDelete(gift.id)" class="icon delete"></div>
             <div @click="showUpdateForm(gift)" class="icon edit"></div>
           </div>
@@ -56,7 +53,7 @@
             {{ gift.title }}
           </div>
         </div>
-        <div>{{ gift.description }}</div>
+        <div class="gift-description">{{ gift.description }}</div>
         <div class="image-wrapper">
           <img :src="gift.image" alt="regalo" />
         </div>
@@ -79,7 +76,7 @@
         <div class="main">
           <div class="form-row">
             <label for="title">Título:</label>
-            <input type="text" name="title" id="title" v-model="title" />
+            <input type="text" name="title" id="title" autofocus v-model="title" />
           </div>
           <div class="form-row">
             <label for="description">Descripción:</label>
@@ -87,7 +84,7 @@
           </div>
           <div class="form-row">
             <label for="image">Link Imagen:</label>
-            <input type="url" name="image" id="image" v-model="image" />
+            <textarea type="url" name="image" id="image" v-model="image" ></textarea>
             <div class="link-format-error" v-if="image && invalidImageLinkFormat">
               Debe comenzar con http:// o https://
             </div>
@@ -107,8 +104,8 @@
               <div class="link-text">
                 <div class="text">{{ link.text }}</div>
                 <div class="link-actions">
-                  <div class="icon delete"></div>
-                  <div class="icon edit"></div>
+                  <div class="icon delete" @click="openDeleteLink(link, idx)"></div>
+                  <div class="icon edit" @click="openUpdateLink(link, idx)"></div>
                 </div>
               </div>
               <div class="link-url">{{ link.url }}</div>
@@ -122,30 +119,63 @@
             Guardar
           </button>
         </div>
-      </div>
-    </div>
 
-    <div id="links-form" v-if="showLinksForm">
-      <div class="card">
-        <div class="header">Agregar Link</div>
-        <div class="main">
-          <div class="form-row">
-            <label for="linkText">Texto:</label>
-            <input type="text" name="linkText" id="linkText" v-model="linkText" />
-          </div>
-          <div class="form-row">
-            <label for="linkUrl">Enlace:</label>
-            <input type="url" name="linkUrl" id="linkUrl" v-model="linkUrl" />
-            <div class="link-format-error" v-if="linkUrl && invalidLinkFormat">
-              Debe comenzar con http:// o https://
+        <div
+          class="backdrop inner"
+          v-if="showLinksForm || isDeleteLinkOpen || isUpdateLinkOpen"
+        ></div>
+        <!-- ADD LINK FORM -->
+        <div class="card" v-if="showLinksForm">
+          <div class="header">Agregar Link</div>
+          <div class="main">
+            <div class="form-row">
+              <label for="linkText">Texto:</label>
+              <input type="text" name="linkText" id="linkText" autofocus v-model="linkText" />
+            </div>
+            <div class="form-row">
+              <label for="linkUrl">Enlace:</label>
+              <textarea type="url" name="linkUrl" id="linkUrl" v-model="linkUrl"></textarea>
+              <div class="link-format-error" v-if="linkUrl && invalidLinkFormat">
+                Debe comenzar con http:// o https://
+              </div>
             </div>
           </div>
+          <div class="footer">
+            <button @click="closeLinksForm" class="cancel">Cancelar</button>
+            <button @click="addLink" :disabled="!linkText || !linkUrl || invalidLinkFormat">
+              Agregar
+            </button>
+          </div>
         </div>
-        <div class="footer">
-          <button @click="closeLinksForm" class="cancel">Cancelar</button>
-          <button @click="addLink" :disabled="!linkText || !linkUrl || invalidLinkFormat">
-            Agregar
-          </button>
+        <!-- DELETE LINK CONFIRM -->
+        <div class="card" v-if="isDeleteLinkOpen">
+          <div class="header">Confirmar</div>
+          <div class="main">¿Realmente quieres eliminar este Link?</div>
+          <div class="footer">
+            <button @click="closeDeleteLink()">Cancelar</button>
+            <button class="cancel" @click="confirmDeleteLink()">Aceptar</button>
+          </div>
+        </div>
+        <!-- UPDATE LINK FORM -->
+        <div class="card" v-if="isUpdateLinkOpen">
+          <div class="header">Actualizar Link</div>
+          <div class="main">
+            <div class="form-row">
+              <label for="link-title">Texto</label>
+              <input type="text" name="link-title" id="link-title" autofocus v-model="linkText" />
+            </div>
+            <div class="form-row">
+              <label for="link-url">Link</label>
+              <textarea name="link-url" id="link-url" v-model="linkUrl"></textarea>
+              <div class="link-format-error" v-if="linkUrl && invalidLinkFormat">
+                Debe comenzar con http:// o https://
+              </div>
+            </div>
+          </div>
+          <div class="footer">
+            <button @click="closeUpdateLink()">Cancelar</button>
+            <button class="cancel" @click="confirmUpdateLink()">Aceptar</button>
+          </div>
         </div>
       </div>
     </div>
@@ -177,11 +207,17 @@ const linkUrl = ref<string>()
 const loading = ref<boolean>(false)
 const showForm = ref<boolean>(false)
 const showLinksForm = ref<boolean>(false)
-const showBackdrop = ref<boolean>(false)
+const isDeleteLinkOpen = ref<boolean>(false)
+
 const showConfirmDialog = ref<boolean>(false)
 const isUpdating = ref<boolean>(false)
 const processingMsg = ref<string>()
 const errorMsg = ref<string>()
+
+let selectedLinkIdx: number
+const isUpdateLinkOpen = ref<boolean>(false)
+
+const showBackdrop = ref<boolean>(false)
 
 onBeforeMount(() => {
   loadGifts()
@@ -212,6 +248,8 @@ function loadGifts() {
 }
 
 function showCreateForm() {
+  linkText.value = undefined
+  linkUrl.value = undefined
   showForm.value = true
   showBackdrop.value = true
   isUpdating.value = false
@@ -374,7 +412,6 @@ function deleteGift(id: number) {
 }
 
 function openLinksForm() {
-  showForm.value = false
   showLinksForm.value = true
 }
 
@@ -409,13 +446,43 @@ function addLink() {
   linkUrl.value = undefined
   closeLinksForm()
 }
+
+function openDeleteLink(linkData: { text: string; url: string }, idx: number) {
+  linkText.value = linkData.text
+  linkUrl.value = linkData.url
+  selectedLinkIdx = idx
+  isDeleteLinkOpen.value = true
+  links.value[idx]
+}
+function closeDeleteLink() {
+  /* selectedLink.value = undefined */
+  isDeleteLinkOpen.value = false
+}
+function confirmDeleteLink() {
+  links.value.splice(selectedLinkIdx, 1)
+  /* selectedLink.value = undefined */
+  isDeleteLinkOpen.value = false
+}
+
+function openUpdateLink(linkData: { text: string; url: string }, idx: number) {
+  linkText.value = linkData.text
+  linkUrl.value = linkData.url
+  selectedLinkIdx = idx
+  isUpdateLinkOpen.value = true
+}
+function closeUpdateLink() {
+  /* selectedLink.value = undefined */
+  isUpdateLinkOpen.value = false
+}
+function confirmUpdateLink() {
+  links.value[selectedLinkIdx]!.text = linkText.value!
+  links.value[selectedLinkIdx]!.url = linkUrl.value!
+  /* selectedLink.value = undefined */
+  isUpdateLinkOpen.value = false
+}
 </script>
 
 <style scoped>
-.screen-title {
-  text-align: center;
-}
-
 .list {
   display: flex;
   flex-direction: column;
@@ -475,6 +542,12 @@ function addLink() {
   display: flex;
   flex-direction: column;
 }
+.row.body .gift-title div,
+.row.body .gift-description {
+  word-break: break-word;
+  white-space: break-spaces;
+  text-align: justify;
+}
 .row.body .gift-actions {
   display: flex;
   flex-direction: column;
@@ -522,6 +595,11 @@ function addLink() {
   max-width: 380px;
   height: min-content;
 }
+.card .card {
+  width: 85%;
+  box-shadow: none;
+  z-index: 2;
+}
 .card .header {
   text-align: center;
   font-weight: bold;
@@ -563,6 +641,9 @@ function addLink() {
 .backdrop {
   z-index: 2;
 }
+.backdrop.inner {
+  border-radius: 8px;
+}
 
 .loading,
 .create-msg {
@@ -579,28 +660,6 @@ function addLink() {
 }
 
 @media screen and (min-width: 930px) {
-  /* #new-btn {
-    position: absolute;
-    right: 24px;
-    bottom: 8px;
-    border-radius: 50%;
-    background-color: lightgreen;
-    border-color: limegreen;
-    color: green;
-    font-weight: bolder;
-    box-shadow: 1px 1px 6px 0 lightgray;
-    width: 48px;
-    height: 48px;
-  } */
-
-  /* #new-btn.big {
-    position: initial;
-    font-size: 28px;
-    box-shadow: 3px 3px 12px 0 rgb(66, 66, 66);
-    width: 72px;
-    height: 72px;
-  } */
-
   .gift-btn-wrapper {
     position: absolute;
     right: 24px;
@@ -679,11 +738,14 @@ function addLink() {
   justify-content: space-between;
   border: 1px solid lightgray;
 }
+.link-list .link:not(.odd) {
+  background-color: whitesmoke;
+}
 .link-list .link:nth-child(2n + 2) {
   border-top-width: 0;
 }
-.link-list .link.odd {
-  background-color: #e6e6e6;
+.odd {
+  background-color: #ecfff3;
 }
 
 .link-list .link .link-text .text {
@@ -700,6 +762,7 @@ function addLink() {
 .link-text .link-actions {
   display: flex;
   justify-content: space-around;
+  margin-top: 4px;
   width: 100%;
 }
 
@@ -738,7 +801,7 @@ function addLink() {
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.88);
   box-shadow: 0 0 16px white;
   color: green;
   margin: auto;
@@ -782,17 +845,17 @@ function addLink() {
 
 @keyframes beat {
   0% {
-    filter: drop-shadow(5px 5px 10px blueviolet);
+    filter: drop-shadow(0px 0px 20px rgb(0, 213, 255));
     width: 72px;
     height: 72px;
   }
   50% {
-    filter: drop-shadow(5px 5px 10px #fff);
+    filter: drop-shadow(0px 0px 10px rgb(255, 242, 0));
     width: 80px;
     height: 80px;
   }
   100% {
-    filter: drop-shadow(5px 5px 10px blueviolet);
+    filter: drop-shadow(0px 0px 20px rgb(0, 213, 255));
     width: 72px;
     height: 72px;
   }
@@ -813,172 +876,6 @@ function addLink() {
     filter: drop-shadow(5px 5px 10px blueviolet);
     width: 32px;
     height: 32px;
-  }
-}
-
-.aurora {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  mix-blend-mode: darken;
-  pointer-events: none;
-}
-
-.aurora__item {
-  overflow: hidden;
-  position: absolute;
-  width: 60vw;
-  height: 60vw;
-  background-color: #00c2ff;
-  border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
-  filter: blur(1rem);
-  mix-blend-mode: overlay;
-}
-
-.aurora__item:nth-of-type(1) {
-  top: -50%;
-  animation:
-    aurora-border 6s ease-in-out infinite,
-    aurora-1 12s ease-in-out infinite alternate;
-}
-
-.aurora__item:nth-of-type(2) {
-  background-color: #ffc640;
-  right: 0;
-  top: 0;
-  animation:
-    aurora-border 6s ease-in-out infinite,
-    aurora-2 12s ease-in-out infinite alternate;
-}
-
-.aurora__item:nth-of-type(3) {
-  background-color: #33ff8c;
-  left: 0;
-  bottom: 0;
-  animation:
-    aurora-border 6s ease-in-out infinite,
-    aurora-3 8s ease-in-out infinite alternate;
-}
-
-.aurora__item:nth-of-type(4) {
-  background-color: #e54cff;
-  right: 0;
-  bottom: -50%;
-  animation:
-    aurora-border 6s ease-in-out infinite,
-    aurora-4 16s ease-in-out infinite alternate;
-}
-
-@keyframes aurora-1 {
-  0% {
-    top: 0;
-    right: 0;
-  }
-
-  50% {
-    top: 100%;
-    right: 75%;
-  }
-
-  75% {
-    top: 100%;
-    right: 25%;
-  }
-
-  100% {
-    top: 0;
-    right: 0;
-  }
-}
-
-@keyframes aurora-2 {
-  0% {
-    top: -50%;
-    left: 0%;
-  }
-
-  60% {
-    top: 100%;
-    left: 75%;
-  }
-
-  85% {
-    top: 100%;
-    left: 25%;
-  }
-
-  100% {
-    top: -50%;
-    left: 0%;
-  }
-}
-
-@keyframes aurora-3 {
-  0% {
-    bottom: 0;
-    left: 0;
-  }
-
-  40% {
-    bottom: 100%;
-    left: 75%;
-  }
-
-  65% {
-    bottom: 40%;
-    left: 50%;
-  }
-
-  100% {
-    bottom: 0;
-    left: 0;
-  }
-}
-
-@keyframes aurora-4 {
-  0% {
-    bottom: -50%;
-    right: 0;
-  }
-
-  50% {
-    bottom: 0%;
-    right: 40%;
-  }
-
-  90% {
-    bottom: 50%;
-    right: 25%;
-  }
-
-  100% {
-    bottom: -50%;
-    right: 0;
-  }
-}
-
-@keyframes aurora-border {
-  0% {
-    border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
-  }
-
-  25% {
-    border-radius: 47% 29% 39% 49% / 61% 19% 66% 26%;
-  }
-
-  50% {
-    border-radius: 57% 23% 47% 72% / 63% 17% 66% 33%;
-  }
-
-  75% {
-    border-radius: 28% 49% 29% 100% / 93% 20% 64% 25%;
-  }
-
-  100% {
-    border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
   }
 }
 </style>

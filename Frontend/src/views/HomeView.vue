@@ -1,9 +1,6 @@
 <template>
   <main>
-    <!-- <Login /> -->
-
     <div class="main-wrapper">
-      <!-- <p>Aqui la lista</p> -->
       <div class="loading" v-if="loadingMsg">{{ loadingMsg }}</div>
       <div class="error" v-if="errorMsg">ERROR: {{ errorMsg }}</div>
 
@@ -13,6 +10,15 @@
           :item="item"
           @open-item-details:item="openItemDetails"
         ></ListItem>
+      </div>
+      <div class="empty-list" v-if="!items.length && !loadingItems">
+        Valeria aun no ha creado su Mesa de Regalos
+        <div class="aurora">
+          <div class="aurora__item"></div>
+          <div class="aurora__item"></div>
+          <div class="aurora__item"></div>
+          <div class="aurora__item"></div>
+        </div>
       </div>
 
       <div class="item-list" v-if="loadingItems">
@@ -109,12 +115,6 @@ function onUserFormConfirm(userdata: { username: string; email: string }) {
   requestBlockItem(selectedItem.value?.id!, userdata)
 }
 
-function closeBackdrop() {
-  showDetails.value = false
-  showUserForm.value = false
-  selectedItem.value = undefined
-}
-
 function requestBlockItem(itemId: number, userData: { username: string; email: string }) {
   showDetails.value = false
   showUserForm.value = false
@@ -142,6 +142,7 @@ function requestBlockItem(itemId: number, userData: { username: string; email: s
 
         const itemIdx = items.value.findIndex((i) => i.id === itemId)
         items.value[itemIdx]!.status = 1
+        items.value[itemIdx]!.username = userData.username
       }
     })
     .catch((e) => {
@@ -162,7 +163,7 @@ main {
   background-position-x: 32%; */
 
   background: url(../assets/gifts2.avif) no-repeat;
-  background: url(../assets/gifts.jpg) no-repeat;
+  /* background: url(../assets/gifts.jpg) no-repeat; */
   background-size: cover;
   overflow: auto;
 }
@@ -241,5 +242,29 @@ main {
   height: min-content;
   width: inherit;
   z-index: 2;
+}
+
+.empty-list {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+
+  background: rgba(255, 255, 255);
+  color: blue;
+  border-radius: 8px;
+  box-shadow: 0 0 10px black;
+  overflow: hidden;
+  width: 300px;
+  height: 300px;
 }
 </style>
