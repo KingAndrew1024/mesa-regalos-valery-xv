@@ -3,9 +3,9 @@
     <div class="header">IMPORTANTE</div>
     <div class="main">
       <div class="main-msg">
-        Porfavor registra tu nombre para que otros sepan que este regalo ya fue seleccionado.
+        Registra tu nombre para que otros sepan que este regalo ya fue seleccionado.
         <br />
-        tambien tu correo electrónico por si necesitamos contactarte.
+        También tu correo electrónico por si necesitamos contactarte.
       </div>
       <div class="fields">
         <div class="field">
@@ -13,21 +13,25 @@
           <input
             type="text"
             name="name"
+            id="name"
             maxlength="50"
             placeholder="Tu Nombre"
-            autofocus
             v-model="username"
           />
         </div>
         <div class="field">
           <label for="email">Correo:</label>
           <input
-            type="text"
+            type="email"
             name="email"
+            id="email"
             maxlength="50"
             placeholder="Correo electrónico"
             v-model="email"
           />
+        </div>
+        <div class="format-error" v-if="email && invalidEmailLinkFormat">
+          formato de email incorrecto
         </div>
       </div>
     </div>
@@ -58,6 +62,10 @@ function onConfirm() {
 const validEmail = computed(() => {
   return email.value?.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/g)
 })
+
+const invalidEmailLinkFormat = computed(() => {
+  return !validEmail.value
+})
 </script>
 
 <style scoped>
@@ -76,6 +84,7 @@ const validEmail = computed(() => {
 
 .card .main .main-msg {
   margin-bottom: 6px;
+  text-align: justify;
 }
 .card .main .field {
   display: flex;
@@ -88,9 +97,17 @@ const validEmail = computed(() => {
 }
 .card .main .field label {
   font-weight: bolder;
+  width: 90px;
 }
 .card .main .field input {
-  height: 32px;
   border-radius: 4px;
+  margin-left: auto;
+  width: 100%;
+  height: 32px;
+}
+
+.format-error {
+  color: red;
+  font-size: 13px;
 }
 </style>

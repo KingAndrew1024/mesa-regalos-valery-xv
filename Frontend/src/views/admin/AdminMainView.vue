@@ -21,6 +21,7 @@ import Login from '@/components/Login.vue'
   justify-content: space-around;
   align-items: center;
   height: 100%;
+  overflow: auto;
 }
 .users,
 .gifts {

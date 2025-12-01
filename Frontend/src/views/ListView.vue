@@ -29,7 +29,7 @@ export interface Item {
   title: string
   image: string
   description: string
-  links: {text: string, url: string}[]
+  links: string
   status: number
   username: string
   email: string

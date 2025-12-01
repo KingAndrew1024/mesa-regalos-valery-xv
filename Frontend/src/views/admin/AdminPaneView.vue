@@ -29,10 +29,7 @@ const isAuthenticated = computed(() => {
 main {
   background: url(../../assets/bg2.jpg) no-repeat;
   background-size: cover;
-  overflow: auto;
-
   color: white;
-  overflow: auto;
   padding-bottom: 12px;
 }
 
@@ -41,7 +38,7 @@ main {
   justify-content: flex-start;
   align-items: center;
   padding: 4px 8px;
-  background-color: lightskyblue;
+  background-color: #d3eeff;
   box-shadow: 0 1px 6px 0 black;
   margin-bottom: 8px;
 }

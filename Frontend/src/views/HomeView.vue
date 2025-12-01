@@ -134,7 +134,7 @@ function requestBlockItem(itemId: number, userData: { username: string; email: s
 
       const r: DBResponseType = await response.json()
 
-      if (r.changedRows) {
+      if (r.result) {
         showUserForm.value = false
         showDetails.value = false
         selectedItem.value = undefined

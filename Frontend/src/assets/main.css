@@ -44,8 +44,15 @@ button:disabled {
   cursor: initial;
 }
 button:not(:disabled):active {
-  transform: scale(.95);
-  filter: brightness(.9);
+  transform: scale(0.95);
+  filter: brightness(0.9);
+  --webkit-filter: brightness(0.9);
+}
+
+a,
+a:hover,
+a:visited {
+  color: #cb382e;
 }
 
 textarea {
@@ -123,7 +130,6 @@ textarea {
   color: black;
 }
 
-
 .icon {
   width: 20px;
   height: 20px;
@@ -142,7 +148,6 @@ textarea {
 .icon.add {
   content: url(../assets/icons/add_circle.svg);
 }
-
 
 /* -------------------------- */
 .aurora {
@@ -164,6 +169,7 @@ textarea {
   background-color: #00c2ff;
   border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
   filter: blur(1rem);
+  --webkit-filter: blur(1rem);
   mix-blend-mode: overlay;
 }
 

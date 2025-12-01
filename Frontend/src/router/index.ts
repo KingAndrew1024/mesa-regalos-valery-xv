@@ -37,7 +37,7 @@ const router = createRouter({
         {
           path: '/admin/gifts',
           component: AdminGiftsView,
-          /* meta: { requiresAuth: true }, */
+          meta: { requiresAuth: true },
         },
       ],
     },

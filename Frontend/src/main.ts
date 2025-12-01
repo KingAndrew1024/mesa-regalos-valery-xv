@@ -11,10 +11,15 @@ app.use(router)
 
 app.mount('#app')
 
-export const HOST = 'http://localhost:3000'
+//export const HOST = 'http://localhost:3000'
+export const HOST = 'https://vbandrew.mx/mesa-regalos/api/api.php'
 export const JSON_HEADER = { 'Content-Type': 'application/json' }
 
 export interface DBResponseType {
+  message?: string
+  result?: boolean
+}
+/* export interface DBResponseType {
   affectedRows: number
   changedRows: number
   fieldCount: number
@@ -22,7 +27,7 @@ export interface DBResponseType {
   insertId: number
   serverStatus: number
   warningStatus: number
-}
+} */
 
 export interface User {
   id: number | undefined

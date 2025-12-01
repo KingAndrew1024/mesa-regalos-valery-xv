@@ -10,7 +10,7 @@
       <div class="link">
         <div>Lo puedes encontrar en:</div>
         <ul>
-          <li v-for="link in item.links">
+          <li v-for="link in JSON.parse(item.links)">
             <a :href="link.url" target="_blank"><span class="icon open-link"></span>{{ link.text }}</a>
           </li>
         </ul>
@@ -147,11 +147,6 @@ ul li a {
 
 .main a,
 .main a:visited {
-  /* display: block; */
-  color: blue;
   font-weight: 500;
-}
-.main a:hover {
-  color: green;
 }
 </style>

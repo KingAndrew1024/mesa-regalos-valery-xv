@@ -54,7 +54,7 @@ function login() {
 
   loading.value = true
 
-  fetch(HOST + '/login', { method: 'post', headers: JSON_HEADER, body })
+  fetch(HOST + '/users/login', { method: 'post', headers: JSON_HEADER, body })
     .then((response) => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)

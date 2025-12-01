@@ -8,6 +8,7 @@
     <div class="loading" v-if="loading">{{ processingMsg }}</div>
     <div class="error" v-if="errorMsg">{{ errorMsg }}</div>
 
+    <!-- EMPTY LIST -->
     <div
       class="empty-list"
       v-if="!loading && !errorMsg && gifts?.length! == 0 && !showForm && !showLinksForm"
@@ -84,7 +85,7 @@
           </div>
           <div class="form-row">
             <label for="image">Link Imagen:</label>
-            <textarea type="url" name="image" id="image" v-model="image" ></textarea>
+            <textarea type="url" name="image" id="image" v-model="image"></textarea>
             <div class="link-format-error" v-if="image && invalidImageLinkFormat">
               Debe comenzar con http:// o https://
             </div>
@@ -142,7 +143,7 @@
           </div>
           <div class="footer">
             <button @click="closeLinksForm" class="cancel">Cancelar</button>
-            <button @click="addLink" :disabled="!linkText || !linkUrl || invalidLinkFormat">
+            <button @click="addLink" :disabled="!linkText || (!!linkUrl && invalidLinkFormat)">
               Agregar
             </button>
           </div>
@@ -235,8 +236,11 @@ function loadGifts() {
       }
       return response.json() // Parse the JSON response
     })
-    .then((results: GiftType[] = []) => {
-      gifts.value = results /* .filter((user) => user.type !== 1) */
+    .then((results: any[] = []) => {
+      gifts.value = results
+      results.forEach((r, idx) => {
+        gifts.value![idx]!.links = r.links ? JSON.parse(r.links) : [];
+      })
     })
     .catch((e) => {
       console.error(e)
@@ -344,7 +348,7 @@ function updateGift() {
       return response.json() // Parse the JSON response
     })
     .then((resp: DBResponseType) => {
-      if (resp.affectedRows === 1) {
+      if (resp.result) {
         const giftList: GiftType[] = gifts.value!
         const giftIdx = giftList.findIndex((g) => g.id === selectedGiftId.value)!
         let oldGift = giftList[giftIdx]!
@@ -483,15 +487,18 @@ function confirmUpdateLink() {
 </script>
 
 <style scoped>
+#main-wrapper {
+  overflow: auto;
+}
+
 .list {
   display: flex;
   flex-direction: column;
-  max-width: 800px;
+  max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
   background-color: #f5f5f5eb;
   color: black;
-  overflow-x: auto;
 }
 
 .row {
@@ -528,6 +535,9 @@ function confirmUpdateLink() {
 
 .row.body {
   min-width: 600px;
+}
+.row.body:not(.odd) {
+  background-color: white;
 }
 .row.body > div:not(.link-row-wrapper):not(.link-row):not(.link-row div:last-child) {
   display: flex;
@@ -659,21 +669,22 @@ function confirmUpdateLink() {
   z-index: 3;
 }
 
+.gift-btn-wrapper {
+  position: absolute;
+  right: 24px;
+  bottom: 32px;
+  height: 32px !important;
+}
+.gift-btn {
+  animation: beat-small 2s infinite;
+}
+.gift-btn:hover {
+  animation: none;
+  width: 40px;
+  height: 40px;
+}
+
 @media screen and (min-width: 930px) {
-  .gift-btn-wrapper {
-    position: absolute;
-    right: 24px;
-    bottom: 32px;
-    height: 32px !important;
-  }
-  .gift-btn {
-    animation: beat-small 2s infinite;
-  }
-  .gift-btn:hover {
-    animation: none;
-    width: 40px;
-    height: 40px;
-  }
 }
 
 .confirm-dialog {
@@ -846,16 +857,19 @@ function confirmUpdateLink() {
 @keyframes beat {
   0% {
     filter: drop-shadow(0px 0px 20px rgb(0, 213, 255));
+    --webkit-filter: drop-shadow(0px 0px 20px rgb(0, 213, 255));
     width: 72px;
     height: 72px;
   }
   50% {
     filter: drop-shadow(0px 0px 10px rgb(255, 242, 0));
+    --webkit-filter: drop-shadow(0px 0px 10px rgb(255, 242, 0));
     width: 80px;
     height: 80px;
   }
   100% {
     filter: drop-shadow(0px 0px 20px rgb(0, 213, 255));
+    --webkit-filter: drop-shadow(0px 0px 20px rgb(0, 213, 255));
     width: 72px;
     height: 72px;
   }
@@ -864,16 +878,19 @@ function confirmUpdateLink() {
 @keyframes beat-small {
   0% {
     filter: drop-shadow(5px 5px 10px blueviolet);
+    --webkit-filter: drop-shadow(5px 5px 10px blueviolet);
     width: 32px;
     height: 32px;
   }
   50% {
     filter: drop-shadow(5px 5px 10px #fff);
+    --webkit-filter: drop-shadow(5px 5px 10px #fff);
     width: 40px;
     height: 40px;
   }
   100% {
     filter: drop-shadow(5px 5px 10px blueviolet);
+    --webkit-filter: drop-shadow(5px 5px 10px blueviolet);
     width: 32px;
     height: 32px;
   }
